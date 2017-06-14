@@ -1,0 +1,42 @@
+{
+  "name": "fire-video-identification",
+  "version": "1.0.0",
+  "description": "The tool is used to identify fire in a video",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "NODE_ENV=development supervisor -w modules,routes,views,app.js -e js,pug app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xuchengli/fire-video-identification.git"
+  },
+  "keywords": [
+    "[\"AI\"",
+    "\"fire\"",
+    "\"identification\"]"
+  ],
+  "author": "li xu cheng (lixucheng@aliyun.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xuchengli/fire-video-identification/issues"
+  },
+  "homepage": "https://github.com/xuchengli/fire-video-identification#readme",
+  "devDependencies": {
+    "css-loader": "^0.28.4",
+    "pug-loader": "^2.3.0",
+    "reload": "^1.1.5",
+    "style-loader": "^0.18.2",
+    "webpack": "^2.6.1",
+    "webpack-dev-middleware": "^1.10.2",
+    "webpack-hot-middleware": "^2.18.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "jquery": "^3.2.1",
+    "pug": "^2.0.0-rc.2",
+    "uikit": "^3.0.0-beta.25"
+  }
+}
