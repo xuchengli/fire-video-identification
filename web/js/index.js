@@ -2,13 +2,18 @@
  * Created by lixuc on 2017/6/14.
  */
 import "uikit/dist/css/uikit.min.css";
+import "../css/style.css";
 import $ from "jquery";
 import UIkit from "uikit";
 import Icons from "uikit/dist/js/uikit-icons";
 
 UIkit.use(Icons);
 
-var bar = $("#progressbar")[0];
+var $uploader = $("#uploader");
+var $fileInput = $("#uploader input");
+var $uploadBtn = $("#uploader button");
+var $spinner = $("<div class='uk-margin-left' uk-spinner></div>");
+var $bar = $("#progressbar");
 
 UIkit.upload("#uploader", {
     url: "/api/upload",
@@ -19,21 +24,27 @@ UIkit.upload("#uploader", {
         UIkit.notification("<span uk-icon='icon: warning'></span> Only video files are allowed!", "warning");
     },
     loadStart: e => {
-        bar.removeAttribute("hidden");
-        bar.max = e.total;
-        bar.value = e.loaded;
+        $fileInput.attr("disabled", true);
+        $uploadBtn.attr("disabled", true);
+        $uploader.after($spinner);
+        $bar.show();
+        $bar.attr("max", e.total);
+        $bar.attr("value", e.loaded);
     },
     progress: e => {
-        bar.max = e.total;
-        bar.value = e.loaded;
+        $bar.attr("max", e.total);
+        $bar.attr("value", e.loaded);
     },
     loadEnd: e => {
-        bar.max = e.total;
-        bar.value = e.loaded;
+        $bar.attr("max", e.total);
+        $bar.attr("value", e.loaded);
     },
     completeAll: e => {
         var response = e.responseJSON;
-        setTimeout(() => bar.setAttribute("hidden", "hidden"), 1000);
+        $bar.fadeOut("slow");
+        $fileInput.removeAttr("disabled");
+        $uploadBtn.removeAttr("disabled");
+        $spinner.remove();
         if (response.result) {
             UIkit.notification("<span uk-icon='icon: check'></span> Upload Completed!", "success");
         } else {
