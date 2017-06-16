@@ -19,9 +19,24 @@ router.post("/upload", (req, res) => {
             filename: uploaded.filename,
             path: uploaded.path
         }));
+        var identifications = [];
+        for (let thumbnail of thumbnails) {
+            var identification = yield videoHandler.identify(thumbnail);
+            var identified = {
+                result: identification.result === "success",
+                thumbnail: thumbnail
+            };
+            if (identified.result) {
+                Object.assign(identified, {
+                    imageUrl: identification.imageUrl,
+                    classified: identification.classified
+                });
+            }
+            identifications.push(identified);
+        }
         Object.assign(resp, metadata);
         res.json(Object.assign(resp, {
-            thumbnails: thumbnails
+            identifications: identifications
         }));
     }).catch(err => {
         res.json({

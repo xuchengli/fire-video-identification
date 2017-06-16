@@ -3,6 +3,8 @@
  */
 var ffmpeg = require("fluent-ffmpeg");
 var multer = require("multer");
+var rp = require("request-promise");
+var fs = require("fs");
 var config = require("./configuration");
 
 class videoHandler {
@@ -48,16 +50,35 @@ class videoHandler {
     capture(metadata) {
         return new Promise((resolve, reject) => {
             var files = [];
+            var thumbnailFolder = metadata.destination + "/thumbnails";
             ffmpeg(metadata.path).on("filenames", filenames => {
-                files = filenames;
+                files = filenames.map(filename => {
+                    return thumbnailFolder + "/" + filename;
+                });
             }).on("end", () => {
                 resolve(files);
             }).on("error", err => {
                 reject(err);
             }).screenshots({
                 count: Math.round(metadata.duration / config.Second_Per_Capture),
-                folder: metadata.destination + "/thumbnails",
+                folder: thumbnailFolder,
                 filename: metadata.filename.substring(0, metadata.filename.lastIndexOf(".")) + "@%s-%i.png"
+            });
+        });
+    }
+    identify(file) {
+        return new Promise((resolve, reject) => {
+            rp({
+                method: "POST",
+                uri: config.AI_VISION_API,
+                formData: {
+                    files: fs.createReadStream(file)
+                },
+                json: true
+            }).then(response => {
+                resolve(response);
+            }).catch(err => {
+                reject({ message: err.message || "Identify failed, please try again later!" });
             });
         });
     }
