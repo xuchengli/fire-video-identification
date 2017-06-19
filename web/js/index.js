@@ -2,10 +2,14 @@
  * Created by lixuc on 2017/6/14.
  */
 import "uikit/dist/css/uikit.min.css";
+import "video.js/dist/video-js.min.css";
 import "../css/style.css";
 import $ from "jquery";
 import UIkit from "uikit";
 import Icons from "uikit/dist/js/uikit-icons";
+import videojs from "video.js";
+import "videojs-flash";
+import template from "../templates/identification.pug";
 
 UIkit.use(Icons);
 
@@ -13,7 +17,6 @@ var $uploader = $("#uploader");
 var $fileInput = $("#uploader input");
 var $uploadBtn = $("#uploader button");
 var $spinner = $("<div class='uk-margin-left' uk-spinner></div>");
-var $bar = $("#progressbar");
 
 UIkit.upload("#uploader", {
     url: "/api/upload",
@@ -27,26 +30,41 @@ UIkit.upload("#uploader", {
         $fileInput.attr("disabled", true);
         $uploadBtn.attr("disabled", true);
         $uploader.after($spinner);
-        $bar.show();
-        $bar.attr("max", e.total);
-        $bar.attr("value", e.loaded);
-    },
-    progress: e => {
-        $bar.attr("max", e.total);
-        $bar.attr("value", e.loaded);
-    },
-    loadEnd: e => {
-        $bar.attr("max", e.total);
-        $bar.attr("value", e.loaded);
     },
     completeAll: e => {
         var response = e.responseJSON;
-        $bar.fadeOut("slow");
         $fileInput.removeAttr("disabled");
         $uploadBtn.removeAttr("disabled");
         $spinner.remove();
         if (response.result) {
-            UIkit.notification("<span uk-icon='icon: check'></span> Upload Completed!", "success");
+            UIkit.notification("<span uk-icon='icon: check'></span> Identify Completed!", "success");
+            var screenshots = [];
+            var identifications = response.identifications;
+            for (let identification of identifications) {
+                if (identification.result && identification.classified) {
+                    var fire = identification.classified.fire;
+                    if (fire && parseFloat(fire) >= 0.8) {
+                        var thumbnail = identification.thumbnail;
+                        var start = thumbnail.lastIndexOf("@");
+                        var end = thumbnail.lastIndexOf("-");
+                        var ts = parseFloat(thumbnail.substring(start + 1, end)).toFixed(2);
+                        screenshots.push({
+                            url: identification.imageUrl,
+                            timestamp: "@" + parseFloat(ts) + "s"
+                        });
+                    }
+                }
+            }
+            $("body").append(template({
+                video: "/video?path=" + response.path,
+                screenshots: screenshots
+            }));
+            videojs("player", {
+                autoplay: true,
+                controls: true,
+                preload: "auto",
+                techOrder: ["flash", "html5"]
+            });
         } else {
             UIkit.notification("<span uk-icon='icon: close'></span> " + response.message, "danger");
         }
