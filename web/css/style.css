@@ -1,3 +1,20 @@
-#progressbar {
-    display: none;
+.uk-progress {
+    display:block;
+    border:0;
+    height:20px;
+    background:#f8f8f8;
+    overflow:hidden;
+    line-height:20px;
+    border-radius:500px;
+}
+.uk-progress-bar {
+    width:0;
+    height:100%;
+    background:#1e87f0;
+    float:left;
+    -webkit-transition:width 0.6s ease;
+    transition:width 0.6s ease;
+    font-size:12px;
+    color:#fff;
+    text-align:center;
 }

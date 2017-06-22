@@ -2,7 +2,9 @@ extends layout
 
 block content
     .uk-container.uk-margin-top
-        .uk-margin
-            #uploader(uk-form-custom)
-                input(type="file")
-                button.uk-button.uk-button-default(type="button" tabindex="-1") Identify your video
+        #uploader(uk-form-custom)
+            input(type="file")
+            button.uk-button.uk-button-default(type="button" tabindex="-1") Identify your video
+        .uk-child-width-1-2.uk-grid-small.uk-margin-top(uk-grid)
+            #progress
+            #video

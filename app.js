@@ -4,9 +4,11 @@
 var express = require("express");
 var path = require("path");
 var bodyParser = require("body-parser");
+var expressWs = require("express-ws");
 var app = express();
 var env = process.env.NODE_ENV || "production";
 
+expressWs(app);
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 app.use(bodyParser.json());
@@ -28,20 +30,10 @@ if (env == "development") {
         }
     }));
     app.use(webpackHotMiddleware(compiler));
-
-    require("./routes")(app);
-
-    var reload = require("reload");
-    var http = require("http");
-    var server = http.createServer(app);
-    reload(server, app);
-    server.listen(8080, function() {
-        console.log("Development server started>>>");
-    });
 } else {
     app.use(express.static(path.join(__dirname, "public")));
-    require("./routes")(app);
-    app.listen(8080, function() {
-        console.log("Server started>>>");
-    });
 }
+require("./routes")(app);
+app.listen(8080, function() {
+    console.log("Server started>>>");
+});
