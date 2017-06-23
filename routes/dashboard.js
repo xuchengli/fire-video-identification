@@ -151,6 +151,7 @@ router.ws("/", (ws, req) => {
                                 status: 302,
                                 data: {
                                     video: filename,
+                                    duration: duration,
                                     files: files
                                 }
                             }));
@@ -192,6 +193,7 @@ router.ws("/", (ws, req) => {
                                 status: 402,
                                 data: {
                                     video: message.data.video,
+                                    duration: message.data.duration,
                                     identifications: identifications
                                 }
                             }));

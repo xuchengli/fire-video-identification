@@ -7,9 +7,8 @@ import "../css/style.css";
 import $ from "jquery";
 import UIkit from "uikit";
 import Icons from "uikit/dist/js/uikit-icons";
-import videojs from "video.js";
 import Progress from "./progress";
-import template from "../templates/identification.pug";
+import Player from "./player";
 
 UIkit.use(Icons);
 
@@ -19,7 +18,6 @@ var $fileInput = $("#uploader input");
 var $uploadBtn = $("#uploader button");
 var $spinner = $("<div class='uk-margin-left' uk-spinner></div>");
 var $progressContainer = $("#progress");
-var $video = $("#video");
 var progress;
 
 UIkit.upload("#uploader", {
@@ -104,46 +102,40 @@ UIkit.upload("#uploader", {
                             status: 400,
                             data: {
                                 video: message.data.video,
+                                duration: message.data.duration,
                                 files: message.data.files
                             }
                         }));
                         break;
                     case 402:
                         progress.sync("100%").done();
+                        var markers = [];
+                        var identifications = message.data.identifications;
+                        for (let identification of identifications) {
+                            if (identification.result && identification.classified) {
+                                var fire = identification.classified.fire;
+                                var thumbnail = identification.thumbnail;
+                                var start = thumbnail.lastIndexOf("@");
+                                var end = thumbnail.lastIndexOf("s-");
+                                var time = thumbnail.substring(start + 1, end);
+                                markers.push({
+                                    time: time,
+                                    thumbnail: identification.imageUrl,
+                                    fire: fire && parseFloat(fire) >= 0.8
+                                });
+                            }
+                        }
+                        var player = new Player(message.data.video);
+                        player.init({
+                            duration: message.data.duration,
+                            markers: markers
+                        });
                         $fileInput.removeAttr("disabled");
                         $uploadBtn.removeAttr("disabled");
                         $spinner.remove();
-                        $video.append(template({
-                            video: "/video/" + message.data.video
-                        }));
-                        videojs("player", {
-                            autoplay: true,
-                            controls: true,
-                            preload: "auto",
-                            fluid: true
-                        });
                         break;
                 }
             });
-            /*
-            var screenshots = [];
-            var identifications = response.identifications;
-            for (let identification of identifications) {
-                if (identification.result && identification.classified) {
-                    var fire = identification.classified.fire;
-                    if (fire && parseFloat(fire) >= 0.8) {
-                        var thumbnail = identification.thumbnail;
-                        var start = thumbnail.lastIndexOf("@");
-                        var end = thumbnail.lastIndexOf("-");
-                        var ts = parseFloat(thumbnail.substring(start + 1, end)).toFixed(2);
-                        screenshots.push({
-                            url: identification.imageUrl,
-                            timestamp: "@" + parseFloat(ts) + "s"
-                        });
-                    }
-                }
-            }
-            */
         } else {
             UIkit.notification("<span uk-icon='icon: close'></span> " + response.message, "danger");
             progress.fail();

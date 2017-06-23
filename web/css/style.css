@@ -18,3 +18,18 @@
     color:#fff;
     text-align:center;
 }
+.marker-branch {
+    position:absolute;
+    width:2px;
+    height:100%;
+    margin-left:-1px;
+}
+.marker-leaf {
+    position:absolute;
+    width:10px;
+    height:10px;
+    -webkit-border-radius:50%;
+    -moz-border-radius:50%;
+    border-radius:50%;
+    left:-4px;
+}
