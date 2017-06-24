@@ -20,14 +20,14 @@ class thumbnailMarker extends Plugin {
         for (let marker of markers) {
             var left = marker.time / duration * 100;
             if (marker.fire) {
-                this.createMarker(left + "%", "50px", "#f0506e");
+                this.createMarker(marker.thumbnail, left + "%", "50px", "#f0506e");
             } else {
-                this.createMarker(left + "%", "25px", "#32d296");
+                this.createMarker(marker.thumbnail, left + "%", "25px", "#32d296");
             }
         }
     }
-    createMarker(left, height, color) {
-        var marker = new Marker(left, height, color);
+    createMarker(src, left, height, color) {
+        var marker = new Marker(src, left, height, color);
         $progressHolder.append(marker.dom);
     }
 }

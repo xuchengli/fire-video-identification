@@ -33,3 +33,9 @@
     border-radius:50%;
     left:-4px;
 }
+.thumbnail {
+    position:absolute;
+    width:200px;
+    height:100px;
+    margin-left:-100px;
+}
