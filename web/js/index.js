@@ -1,8 +1,8 @@
 /**
  * Created by lixuc on 2017/6/14.
  */
-import "uikit/dist/css/uikit.min.css";
-import "video.js/dist/video-js.min.css";
+import "uikit/dist/css/uikit.css";
+import "video.js/dist/video-js.css";
 import "../css/style.css";
 import $ from "jquery";
 import UIkit from "uikit";
