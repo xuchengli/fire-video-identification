@@ -16,7 +16,7 @@ It leverage below technology for reference:
 * [Pug loader for webpack](https://github.com/pugjs/pug-loader)
 * [Compile & install FFmpeg for docker image of node](https://trac.ffmpeg.org/wiki/CompilationGuide/Ubuntu)
 
-##Installation
+## Installation
 
 1. Clone this repository and goto project directory.
 
@@ -30,8 +30,8 @@ It leverage below technology for reference:
 
 	```
 	$ docker run -d -p 8080:8080 \
-				--name my-app \
-				my-app-image
+		--name my-app \
+		my-app-image
 	```
 
 4. Access url:  [http://localhost:8080](http://localhost:8080)
