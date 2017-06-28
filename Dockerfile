@@ -68,7 +68,7 @@ ENV FFPROBE_PATH /root/bin/ffprobe
 RUN mkdir -p /usr/app/src
 COPY . /usr/app/src
 WORKDIR /usr/app/src
-RUN npm install && npm cache clean
+RUN npm install && npm cache clean --force
 RUN npm run build
 EXPOSE 8080
 CMD ["npm", "start"]
