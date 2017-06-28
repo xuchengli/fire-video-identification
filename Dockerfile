@@ -61,9 +61,8 @@ RUN cd ~/ffmpeg_sources \
     && PATH="$HOME/bin:$PATH" make \
     && make install \
     && hash -r
-ENV FFMPEG_PATH /root/bin
-ENV FFPROBE_PATH $FFMPEG_PATH
-ENV PATH "$PATH:$FFMPEG_PATH"
+ENV FFMPEG_PATH /root/bin/ffmpeg
+ENV FFPROBE_PATH /root/bin/ffprobe
 
 # Build and start up app
 RUN mkdir -p /usr/app/src
