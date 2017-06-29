@@ -28,8 +28,21 @@ It leverage below technology for reference:
 
 3. Start my app.
 
+	3.1. Use default configuration.
+	
 	```
 	$ docker run -d -p 8080:8080 \
+		--name my-app \
+		my-app-image
+	```
+	
+	3.2. *( Optional )* startup with special config.
+	
+	```
+	$ docker run -d -p 8080:8080 \
+		-e Video_Upload_Dir=./upload \
+		-e Second_Per_Capture=10 \
+		-e AI_VISION_API=https://ny1.ptopenlab.com/AIVision/api/dlapis/21524def-ad23-4356-a416-1ec3ac1c5312 \
 		--name my-app \
 		my-app-image
 	```

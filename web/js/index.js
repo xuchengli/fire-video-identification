@@ -12,7 +12,14 @@ import Player from "./player";
 
 UIkit.use(Icons);
 
-var socket = new WebSocket("ws://localhost:8080");
+var location = window.location, wsURL;
+if (location.protocol == "https:") {
+    wsURL = "wss:";
+} else {
+    wsURL = "ws:";
+}
+wsURL += "//" + location.host + location.pathname;
+var socket = new WebSocket(wsURL);
 var $uploader = $("#uploader");
 var $fileInput = $("#uploader input");
 var $uploadBtn = $("#uploader button");
@@ -36,8 +43,8 @@ UIkit.upload("#uploader", {
         $progressContainer.append(progress.dom);
     },
     progress: e => {
-        var per = parseFloat(e.loaded / e.total).toFixed(2);
-        var value = parseFloat(per) * 100 + "%";
+        var per = parseFloat(e.loaded / e.total * 100).toFixed(2);
+        var value = parseFloat(per) + "%";
         progress.sync(value);
     },
     completeAll: e => {
