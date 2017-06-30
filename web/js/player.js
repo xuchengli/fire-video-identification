@@ -35,7 +35,7 @@ videojs.registerPlugin("thumbnailMarker", thumbnailMarker);
 
 class player {
     constructor(video) {
-        $dom = $(template({ video: "/video/" + video }));
+        $dom = $(template({ video: "video/" + video }));
         $video.append($dom);
     }
     init(markers) {

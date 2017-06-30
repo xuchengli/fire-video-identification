@@ -5,6 +5,7 @@ var express = require("express");
 var path = require("path");
 var bodyParser = require("body-parser");
 var expressWs = require("express-ws");
+var config = require("./modules/configuration");
 var app = express();
 var env = process.env.NODE_ENV || "production";
 
@@ -13,7 +14,9 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
 app.locals.env = env;
+app.locals.context = config.Context_Path == "/" ? "" : config.Context_Path;
 
 if (env == "development") {
     var webpack = require("webpack");
@@ -31,9 +34,9 @@ if (env == "development") {
     }));
     app.use(webpackHotMiddleware(compiler));
 } else {
-    app.use(express.static(path.join(__dirname, "public")));
+    app.use(config.Context_Path, express.static(path.join(__dirname, "public")));
 }
-require("./routes")(app);
+require("./routes")(app, config.Context_Path);
 app.listen(8080, function() {
     console.log("Server started>>>");
 });

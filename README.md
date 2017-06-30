@@ -43,6 +43,7 @@ It leverage below technology for reference:
 		-e Video_Upload_Dir=./upload \
 		-e Second_Per_Capture=10 \
 		-e AI_VISION_API=https://ny1.ptopenlab.com/AIVision/api/dlapis/21524def-ad23-4356-a416-1ec3ac1c5312 \
+		-e Context_Path=/fire \
 		--name my-app \
 		my-app-image
 	```

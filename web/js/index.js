@@ -28,7 +28,7 @@ var $progressContainer = $("#progress");
 var progress;
 
 UIkit.upload("#uploader", {
-    url: "/upload",
+    url: "upload",
     name: "fire-video",
     mime: "video/*",
     dataType: "json",
