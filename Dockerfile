@@ -64,6 +64,10 @@ RUN cd ~/ffmpeg_sources \
 ENV FFMPEG_PATH /root/bin/ffmpeg
 ENV FFPROBE_PATH /root/bin/ffprobe
 
+# Before webpack app in production, you can set context path using <docker build --build-arg context=[my-context-path]>
+ARG context=/
+ENV Context_Path $context
+
 # Build and start up app
 RUN mkdir -p /usr/app/src
 COPY . /usr/app/src

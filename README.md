@@ -22,8 +22,16 @@ It leverage below technology for reference:
 
 2. Build app image.
 
+	2.1. Use default context path ( / ).
+
 	```
 	$ docker build -t my-app-image .
+	```
+	
+	2.2. *( Optional )* build image with special context path.
+	
+	```
+	$ docker build --build-arg context=/fire -t my-app-image .
 	```
 
 3. Start my app.
@@ -43,7 +51,6 @@ It leverage below technology for reference:
 		-e Video_Upload_Dir=./upload \
 		-e Second_Per_Capture=10 \
 		-e AI_VISION_API=https://ny1.ptopenlab.com/AIVision/api/dlapis/21524def-ad23-4356-a416-1ec3ac1c5312 \
-		-e Context_Path=/fire \
 		--name my-app \
 		my-app-image
 	```
