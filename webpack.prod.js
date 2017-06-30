@@ -8,6 +8,8 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var WebpackChunkHash = require("webpack-chunk-hash");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 var InlineChunkManifestHtmlWebpackPlugin = require("inline-chunk-manifest-html-webpack-plugin");
+var config = require("./modules/configuration");
+var context = config.Context_Path == "/" ? "" : config.Context_Path;
 
 module.exports = {
     entry: "./web/js/index.js",
@@ -72,7 +74,12 @@ module.exports = {
         new webpack.HashedModuleIdsPlugin(),
         new WebpackChunkHash(),
         new HtmlWebpackPlugin({
-            template: "views/dashboard.pug"
+            template: "!!html-loader!pug-html-loader?{" +
+                            "data: {" +
+                                "env: 'production'," +
+                                "context: '" + context + "'" +
+                            "}" +
+                        "}!views/dashboard.pug"
         }),
         new InlineChunkManifestHtmlWebpackPlugin({
             dropAsset: true
