@@ -22,7 +22,7 @@ It leverage below technology for reference:
 
 2. Build app image.
 
-	2.1. Use default context path ( / ).
+	2.1. Use default context path ( / ) and AI VISION API.
 
 	```
 	$ docker build -t my-app-image .
@@ -32,6 +32,14 @@ It leverage below technology for reference:
 	
 	```
 	$ docker build --build-arg context=/fire -t my-app-image .
+	```
+	
+	2.3. *( Optional )* or build image with special AI VISION API also.
+	
+	```
+	$ docker build --build-arg context=/fire \
+		--build-arg api=http://172.29.163.54:8080/AIVision/api/dlapis/21524def-ad23-4356-a416-1ec3ac1c5312 \
+		-t my-app-image .
 	```
 
 3. Start my app.
