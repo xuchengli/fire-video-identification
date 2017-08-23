@@ -20,6 +20,8 @@ if (location.protocol == "https:") {
 }
 wsURL += "//" + location.host + location.pathname;
 var socket = new WebSocket(wsURL);
+var $handler = $("#handler");
+var $api = $("#api");
 var $uploader = $("#uploader");
 var $fileInput = $("#uploader input");
 var $uploadBtn = $("#uploader button");
@@ -27,6 +29,9 @@ var $spinner = $("<div class='uk-margin-left' uk-spinner></div>");
 var $progressContainer = $("#progress");
 var progress;
 
+$handler.val($("#handler option:first").val()).on("change", evt => {
+    $api.attr("value", evt.target.value);
+}).change();
 UIkit.upload("#uploader", {
     url: "upload",
     name: "fire-video",
@@ -36,9 +41,11 @@ UIkit.upload("#uploader", {
         UIkit.notification("<span uk-icon='icon: warning'></span> Only video files are allowed!", "warning");
     },
     loadStart: e => {
+        $handler.attr("disabled", true);
+        $api.attr("disabled", true);
         $fileInput.attr("disabled", true);
         $uploadBtn.attr("disabled", true);
-        $uploader.after($spinner);
+        $uploadBtn.append($spinner);
         progress = new Progress("1. Upload the video");
         $progressContainer.append(progress.dom);
     },
@@ -110,7 +117,8 @@ UIkit.upload("#uploader", {
                             data: {
                                 video: message.data.video,
                                 duration: message.data.duration,
-                                files: message.data.files
+                                files: message.data.files,
+                                api: $api.val()
                             }
                         }));
                         break;
@@ -120,16 +128,28 @@ UIkit.upload("#uploader", {
                         var identifications = message.data.identifications;
                         for (let identification of identifications) {
                             if (identification.result && identification.classified) {
-                                var fire = identification.classified.fire;
                                 var thumbnail = identification.thumbnail;
                                 var start = thumbnail.lastIndexOf("@");
                                 var end = thumbnail.lastIndexOf("s-");
                                 var time = thumbnail.substring(start + 1, end);
-                                markers.push({
-                                    time: time,
-                                    thumbnail: identification.imageUrl,
-                                    fire: fire && parseFloat(fire) >= 0.8
-                                });
+                                if ($handler.prop("selectedIndex") == 0) {
+                                    //Selected handler's index 0 is fire classification
+                                    var fire = identification.classified.fire;
+                                    markers.push({
+                                        time: time,
+                                        thumbnail: identification.imageUrl,
+                                        fire: fire && parseFloat(fire) >= 0.8
+                                    });
+                                } else if ($handler.prop("selectedIndex") == 1) {
+                                    //Selected handler's index 1 is emotion detection
+                                    var emotion = identification.classified.label;
+                                    var confidence = identification.classified.confidence;
+                                    markers.push({
+                                        time: time,
+                                        thumbnail: identification.imageUrl,
+                                        happy: emotion == "happy" && parseFloat(confidence) >= 0.6
+                                    });
+                                }
                             }
                         }
                         var player = new Player(message.data.video);
@@ -137,6 +157,8 @@ UIkit.upload("#uploader", {
                             duration: message.data.duration,
                             markers: markers
                         });
+                        $handler.removeAttr("disabled");
+                        $api.removeAttr("disabled");
                         $fileInput.removeAttr("disabled");
                         $uploadBtn.removeAttr("disabled");
                         $spinner.remove();

@@ -2,9 +2,16 @@ extends layout
 
 block content
     .uk-container.uk-margin-top
-        #uploader(uk-form-custom)
-            input(type="file")
-            button.uk-button.uk-button-default(type="button" tabindex="-1") Identify your video
+        form.uk-grid-small(uk-grid)
+            .uk-width-1-4
+                select#handler.uk-select
+                    option(value="/dlapis/d31ab3ee-6d71-4b93-877a-d4a8552b9adc") Fire classification
+                    option(value="/dlapis/38299ba9-e059-40ee-acbd-5d832757772a") Emotion detection
+            .uk-width-1-2
+                input#api.uk-input(type="text")
+            #uploader.uk-width-1-4(uk-form-custom)
+                input(type="file")
+                button.uk-button.uk-button-primary(type="button" tabindex="-1") Upload your video
         .uk-child-width-1-2.uk-grid-small.uk-margin-top(uk-grid)
             #progress
             #video

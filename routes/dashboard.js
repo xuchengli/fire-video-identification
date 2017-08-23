@@ -71,8 +71,8 @@ router.ws("/", (ws, req) => {
          *      403 => identify fail
          */
         if (message.status == 100) {
-            var filename = message.data.filename;
-            var mp4 = filename.substring(0, filename.lastIndexOf(".")) + ".mp4";
+            let filename = message.data.filename;
+            let mp4 = filename.substring(0, filename.lastIndexOf(".")) + ".mp4";
             ffmpeg(config.Video_Upload_Dir + "/" + filename).on("progress", info => {
                 ws.send(JSON.stringify({
                     status: 101,
@@ -90,7 +90,7 @@ router.ws("/", (ws, req) => {
                 }));
             }).format("mp4").save(config.Video_Upload_Dir + "/" + mp4);
         } else if (message.status == 200) {
-            var filename = message.data.filename;
+            let filename = message.data.filename;
             ffmpeg(config.Video_Upload_Dir + "/" + filename).on("progress", info => {
                 ws.send(JSON.stringify({
                     status: 201,
@@ -103,8 +103,8 @@ router.ws("/", (ws, req) => {
                         error: err.message
                     }));
                 } else {
-                    var stream = metadata.streams[0];
-                    var format = metadata.format;
+                    let stream = metadata.streams[0];
+                    let format = metadata.format;
                     ws.send(JSON.stringify({
                         status: 202,
                         data: {
@@ -121,27 +121,27 @@ router.ws("/", (ws, req) => {
             });
         } else if (message.status == 300) {
             co(function* () {
-                var filename = message.data.filename;
-                var duration = message.data.duration;
-                var videoHandler = new VideoHandler();
-                var thumbnailFolder = config.Video_Upload_Dir + "/thumbnails";
+                let filename = message.data.filename;
+                let duration = message.data.duration;
+                let videoHandler = new VideoHandler();
+                let thumbnailFolder = config.Video_Upload_Dir + "/thumbnails";
                 if (!fs.existsSync(thumbnailFolder)) {
                     fs.mkdirSync(thumbnailFolder);
                 }
-                var times = [], files = [];
-                for (var i=1; i<duration; i+=config.Second_Per_Capture) {
+                let times = [], files = [];
+                for (let i=1; i<duration; i+=config.Second_Per_Capture) {
                     times.push(i);
                 }
-                var input = config.Video_Upload_Dir + "/" + filename;
-                for (var i=0, len=times.length; i<len; i++) {
-                    var output = thumbnailFolder + "/" +
+                let input = config.Video_Upload_Dir + "/" + filename;
+                for (let i=0, len=times.length; i<len; i++) {
+                    let output = thumbnailFolder + "/" +
                                  filename.substring(0, filename.lastIndexOf(".")) +
                                  "@" + times[i] + "s-" + (i + 1) + ".png";
-                    var screenshot = yield videoHandler.screenShot(input, output, times[i]);
+                    let screenshot = yield videoHandler.screenShot(input, output, times[i]);
                     if (screenshot) {
                         files.push(output);
                         if (i < len - 1) {
-                            var per = parseFloat((i + 1) / len * 100).toFixed(2);
+                            let per = parseFloat((i + 1) / len * 100).toFixed(2);
                             ws.send(JSON.stringify({
                                 status: 301,
                                 data: { percent: parseFloat(per) }
@@ -166,13 +166,14 @@ router.ws("/", (ws, req) => {
             });
         } else if (message.status == 400) {
             co(function* () {
-                var files = message.data.files;
-                var videoHandler = new VideoHandler();
-                var identifications = [];
-                for (var i=0, len=files.length; i<len; i++) {
-                    var file = files[i];
-                    var identification = yield videoHandler.identify(file);
-                    var identified = {
+                let files = message.data.files;
+                let apiURL = message.data.api;
+                let videoHandler = new VideoHandler();
+                let identifications = [];
+                for (let i=0, len=files.length; i<len; i++) {
+                    let file = files[i];
+                    let identification = yield videoHandler.identify(apiURL, file);
+                    let identified = {
                         result: identification.result === "success",
                         thumbnail: file
                     };
@@ -183,7 +184,7 @@ router.ws("/", (ws, req) => {
                         });
                         identifications.push(identified);
                         if (i < len - 1) {
-                            var per = parseFloat((i + 1) / len * 100).toFixed(2);
+                            let per = parseFloat((i + 1) / len * 100).toFixed(2);
                             ws.send(JSON.stringify({
                                 status: 401,
                                 data: { percent: parseFloat(per) }
