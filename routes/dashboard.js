@@ -129,7 +129,7 @@ router.ws("/", (ws, req) => {
                     fs.mkdirSync(thumbnailFolder);
                 }
                 let times = [], files = [];
-                for (let i=1; i<duration; i+=config.Second_Per_Capture) {
+                for (let i=1; i<duration; i+=parseInt(config.Second_Per_Capture)) {
                     times.push(i);
                 }
                 let input = config.Video_Upload_Dir + "/" + filename;
