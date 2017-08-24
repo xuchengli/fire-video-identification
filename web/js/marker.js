@@ -7,16 +7,17 @@ import thumbnailTemplate from "../templates/thumbnail.pug";
 
 var $dom, thumbnails = {};
 class marker {
-    constructor(src, left, height, color) {
+    constructor(src, left, height, color, icon) {
         $dom = $(markerTemplate({
             src: src,
             left: left,
             height: height,
-            color: color
+            color: color,
+            icon: icon
         }));
         thumbnails[src] = $(thumbnailTemplate({
             src: src,
-            top: (parseInt(height) + 20) + "px",
+            top: (parseInt(height) + 30) + "px",
             left: left
         }));
         $dom.hover(evt => {

@@ -4,7 +4,6 @@
 var ffmpeg = require("fluent-ffmpeg");
 var rp = require("request-promise");
 var fs = require("fs");
-var path = require("path");
 var config = require("./configuration");
 
 class videoHandler {
@@ -21,7 +20,7 @@ class videoHandler {
         return new Promise((resolve, reject) => {
             rp({
                 method: "POST",
-                uri: path.join(config.AI_VISION_API, apiURL),
+                uri: config.AI_VISION_API + apiURL,
                 formData: {
                     files: fs.createReadStream(file)
                 },

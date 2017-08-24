@@ -132,23 +132,33 @@ UIkit.upload("#uploader", {
                                 var start = thumbnail.lastIndexOf("@");
                                 var end = thumbnail.lastIndexOf("s-");
                                 var time = thumbnail.substring(start + 1, end);
+                                var marker = {
+                                    time: time,
+                                    thumbnail: identification.imageUrl
+                                };
                                 if ($handler.prop("selectedIndex") == 0) {
                                     //Selected handler's index 0 is fire classification
                                     var fire = identification.classified.fire;
-                                    markers.push({
-                                        time: time,
-                                        thumbnail: identification.imageUrl,
+                                    markers.push(Object.assign(marker, {
                                         fire: fire && parseFloat(fire) >= 0.8
-                                    });
+                                    }));
                                 } else if ($handler.prop("selectedIndex") == 1) {
                                     //Selected handler's index 1 is emotion detection
-                                    var emotion = identification.classified.label;
-                                    var confidence = identification.classified.confidence;
-                                    markers.push({
-                                        time: time,
-                                        thumbnail: identification.imageUrl,
-                                        happy: emotion == "happy" && parseFloat(confidence) >= 0.6
-                                    });
+                                    var emotion = "", confidence = 0;
+                                    var classified = identification.classified;
+                                    for (let cls of classified) {
+                                        if (cls.confidence > confidence) {
+                                            emotion = cls.label;
+                                            confidence = cls.confidence;
+                                        }
+                                    }
+                                    var emotionObj = emotion != "" ? {} : null;
+                                    if (emotionObj) {
+                                        emotionObj[emotion] = parseFloat(confidence) >= 0.8;
+                                    }
+                                    markers.push(Object.assign(marker, {
+                                        emotion: emotionObj
+                                    }));
                                 }
                             }
                         }

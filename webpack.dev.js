@@ -15,8 +15,12 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(eot|svg|ttf|woff|woff2)$/,
-                use: "file-loader"
+                test: /\.(png|jpg|gif|eot|svg|ttf|woff|woff2)$/,
+                loader: "url-loader",
+                options: {
+                    name: "[hash:6].[ext]",
+                    limit: 10000
+                }
             },
             {
                 test: /\.css$/,
