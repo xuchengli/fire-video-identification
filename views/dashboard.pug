@@ -1,17 +1,34 @@
 extends layout
 
 block content
-    .uk-container.uk-margin-top
-        form.uk-grid-small(uk-grid)
-            .uk-width-1-4
-                select#handler.uk-select
-                    option(value="/dlapis/d31ab3ee-6d71-4b93-877a-d4a8552b9adc") Fire classification
-                    option(value="/dlapis/38299ba9-e059-40ee-acbd-5d832757772a") Emotion detection
-            .uk-width-1-2
-                input#api.uk-input(type="text")
-            #uploader.uk-width-1-4(uk-form-custom)
-                input(type="file")
-                button.uk-button.uk-button-primary(type="button" tabindex="-1") Upload your video
+    .uk-container
+        table.uk-table.uk-table-divider
+            thead
+                tr
+                    th(style="width:15%;") Type
+                    th(style="width:45%;") API
+                    th(style="width:30%;") Labels
+                    th(style="width:10%;") Action
+            tbody
+            tfoot
+                tr
+                    td(colspan="4")
+                        label.uk-margin-small-right Confidence
+                        | > 
+                        select#confidence.uk-select.uk-form-small.uk-margin-right(style="width:65px;")
+                            - for (var n = 10; n < 100; n += 10)
+                                if (n == 80)
+                                    option(value=n/100 selected="selected") #{n}%
+                                else
+                                    option(value=n/100) #{n}%
+                        label.uk-margin-small-right Extract screenshots every
+                        select#frequence.uk-select.uk-form-small(style="width:60px;")
+                            - for (var n = 1; n <= 60; n++)
+                                option(value=n) #{n}s
+                        #uploader.uk-align-right(uk-form-custom)
+                            input(type="file")
+                            button.uk-button.uk-button-primary.uk-button-small(type="button" tabindex="-1")
+                                | Upload your video
         .uk-child-width-1-2.uk-grid-small.uk-margin-top(uk-grid)
             #progress
             #video

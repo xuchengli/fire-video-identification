@@ -9,6 +9,12 @@ import UIkit from "uikit";
 import Icons from "uikit/dist/js/uikit-icons";
 import Progress from "./progress";
 import Player from "./player";
+import template from "../templates/api-item.pug";
+import flameIcon from "../images/flame.png";
+import happyIcon from "../images/happy.png";
+import angryIcon from "../images/angry.png";
+import surprisedIcon from "../images/surprised.png";
+import clappingIcon from "../images/clapping.png";
 
 UIkit.use(Icons);
 
@@ -20,18 +26,45 @@ if (location.protocol == "https:") {
 }
 wsURL += "//" + location.host + location.pathname;
 var socket = new WebSocket(wsURL);
-var $handler = $("#handler");
-var $api = $("#api");
+var $tbody = $("table tbody");
+var $confidence = $("#confidence");
+var $frequence = $("#frequence");
 var $uploader = $("#uploader");
-var $fileInput = $("#uploader input");
 var $uploadBtn = $("#uploader button");
 var $spinner = $("<div class='uk-margin-left' uk-spinner></div>");
 var $progressContainer = $("#progress");
 var progress;
 
-$handler.val($("#handler option:first").val()).on("change", evt => {
-    $api.attr("value", evt.target.value);
-}).change();
+var initItem = {
+    types: [
+        { value: "classification", text: "Classification" },
+        { value: "object-detection", text: "Object detection" }
+    ],
+    apis: [
+        "https://crl.ptopenlab.com:8800/dlaas/api/dlapis/d31ab3ee-6d71-4b93-877a-d4a8552b9adc",
+        "https://crl.ptopenlab.com:8800/dlaas/api/dlapis/38299ba9-e059-40ee-acbd-5d832757772a"
+    ],
+    labels: [
+        { text: "Fire", icon: flameIcon },
+        { text: "Happy", icon: happyIcon },
+        { text: "Angry", icon: angryIcon },
+        { text: "Surprise", icon: surprisedIcon },
+        { text: "Clapping", icon: clappingIcon }
+    ]
+};
+$tbody.append(template(initItem));
+$tbody.on("click", ".btn-plus, .btn-minus, li a", evt => {
+    var $this = $(evt.currentTarget);
+    if ($this.hasClass("btn-plus")) {
+        $tbody.append(template(initItem));
+    } else if ($this.hasClass("btn-minus")) {
+        if ($tbody.children().length > 1) {
+            $this.parents("tr").remove();
+        }
+    } else {
+        $this.parents("td").find("input").val($this.text());
+    }
+});
 UIkit.upload("#uploader", {
     url: "upload",
     name: "fire-video",
@@ -41,10 +74,9 @@ UIkit.upload("#uploader", {
         UIkit.notification("<span uk-icon='icon: warning'></span> Only video files are allowed!", "warning");
     },
     loadStart: e => {
-        $handler.attr("disabled", true);
-        $api.attr("disabled", true);
-        $fileInput.attr("disabled", true);
-        $uploadBtn.attr("disabled", true);
+        $("select").attr("disabled", true);
+        $("input").attr("disabled", true);
+        $("button").attr("disabled", true);
         $uploadBtn.append($spinner);
         progress = new Progress("1. Upload the video");
         $progressContainer.append(progress.dom);

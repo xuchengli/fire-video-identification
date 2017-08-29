@@ -1,0 +1,23 @@
+tr
+    td
+        select.uk-select.uk-form-small
+            each type in types
+                option(value=type.value)= type.text
+    td
+        input.uk-input.uk-form-small(type="text")
+        div(uk-dropdown="mode: click")
+            ul.uk-nav.uk-dropdown-nav
+                each api in apis
+                    li
+                        a(href="#")= api
+    td
+        .uk-grid-small(uk-grid)
+            each label in labels
+                label
+                    input.uk-checkbox(type="checkbox")
+                    |  #{label.text}
+                    span.uk-icon.uk-icon-image.icon-image-custom(
+                        style="background-image:url(" + label.icon + ");")
+    td
+        button.uk-icon-button.uk-margin-small-right.btn-plus(uk-icon="icon: plus")
+        button.uk-icon-button.btn-minus(uk-icon="icon: minus")

@@ -37,3 +37,7 @@
     height:100px;
     margin-left:-100px;
 }
+.icon-image-custom {
+    background-size:20px 20px;
+    margin-left:3px;
+}
