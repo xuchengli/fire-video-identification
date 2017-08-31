@@ -36,20 +36,16 @@ var $progressContainer = $("#progress");
 var progress;
 
 var initItem = {
-    types: [
-        { value: "classification", text: "Classification" },
-        { value: "object-detection", text: "Object detection" }
-    ],
     apis: [
         "https://crl.ptopenlab.com:8800/dlaas/api/dlapis/d31ab3ee-6d71-4b93-877a-d4a8552b9adc",
         "https://crl.ptopenlab.com:8800/dlaas/api/dlapis/38299ba9-e059-40ee-acbd-5d832757772a"
     ],
     labels: [
-        { text: "Fire", icon: flameIcon },
-        { text: "Happy", icon: happyIcon },
-        { text: "Angry", icon: angryIcon },
-        { text: "Surprise", icon: surprisedIcon },
-        { text: "Clapping", icon: clappingIcon }
+        { value: "fire", text: "Fire", icon: flameIcon },
+        { value: "happy", text: "Happy", icon: happyIcon },
+        { value: "angry", text: "Angry", icon: angryIcon },
+        { value: "surprised", text: "Surprise", icon: surprisedIcon },
+        { value: "clap", text: "Clapping", icon: clappingIcon }
     ]
 };
 $tbody.append(template(initItem));
@@ -65,6 +61,14 @@ $tbody.on("click", ".btn-plus, .btn-minus, li a", evt => {
         $this.parents("td").find("input").val($this.text());
     }
 });
+function mapReduce($checkbox) {
+    return $checkbox.map(function() {
+        let $this = $(this);
+        let label = {};
+        label[$this.val()] = $this.data("icon");
+        return label;
+    }).get().reduce((assign, cur) => Object.assign(assign, cur));
+}
 UIkit.upload("#uploader", {
     url: "upload",
     name: "fire-video",
@@ -136,7 +140,8 @@ UIkit.upload("#uploader", {
                             status: 300,
                             data: {
                                 filename: message.data.filename,
-                                duration: message.data.duration
+                                duration: message.data.duration,
+                                frequence: $frequence.val()
                             }
                         }));
                         break;
@@ -144,65 +149,72 @@ UIkit.upload("#uploader", {
                         progress.sync("100%").done();
                         progress = new Progress((mp4 ? 4 : 5) + ". Identify the video");
                         $progressContainer.append(progress.dom);
+                        var apis = $(".api-url").map(function() {
+                            return $(this).val();
+                        }).get();
                         socket.send(JSON.stringify({
                             status: 400,
                             data: {
                                 video: message.data.video,
                                 duration: message.data.duration,
                                 files: message.data.files,
-                                api: $api.val()
+                                apis: apis
                             }
                         }));
                         break;
                     case 402:
                         progress.sync("100%").done();
+                        var $apiLabel = $(".api-label");
+                        var confidence = $confidence.val();
                         var markers = [];
                         var identifications = message.data.identifications;
                         for (let identification of identifications) {
-                            if (identification.result && identification.classified) {
-                                var thumbnail = identification.thumbnail;
-                                var start = thumbnail.lastIndexOf("@");
-                                var end = thumbnail.lastIndexOf("s-");
-                                var time = thumbnail.substring(start + 1, end);
-                                var marker = {
-                                    time: time,
-                                    thumbnail: identification.imageUrl
-                                };
-                                if ($handler.prop("selectedIndex") == 0) {
-                                    //Selected handler's index 0 is fire classification
-                                    var fire = identification.classified.fire;
-                                    markers.push(Object.assign(marker, {
-                                        fire: fire && parseFloat(fire) >= 0.8
-                                    }));
-                                } else if ($handler.prop("selectedIndex") == 1) {
-                                    //Selected handler's index 1 is emotion detection
-                                    var emotion = "", confidence = 0;
-                                    var classified = identification.classified;
-                                    for (let cls of classified) {
-                                        if (cls.confidence > confidence) {
-                                            emotion = cls.label;
-                                            confidence = cls.confidence;
+                            var thumbnail = identification.thumbnail;
+                            var start = thumbnail.lastIndexOf("@");
+                            var end = thumbnail.lastIndexOf("s-");
+                            var time = thumbnail.substring(start + 1, end);
+                            var identified = identification.identified;
+                            var marker = {
+                                time: time,
+                                labels: []
+                            };
+                            for (let iden of identified) {
+                                var $checkbox = $($apiLabel[iden.apiIndex]).find(".uk-checkbox:checked");
+                                var labels = mapReduce($checkbox);
+                                if (Array.isArray(iden.classified)) {
+                                    for (let cls of iden.classified) {
+                                        if (labels[cls.label] && parseFloat(cls.confidence) >= confidence) {
+                                            let label = {};
+                                            label[cls.label] = true;
+                                            marker.labels.push(Object.assign(label, {
+                                                thumbnail: iden.imageUrl,
+                                                icon: labels[cls.label]
+                                            }));
                                         }
                                     }
-                                    var emotionObj = emotion != "" ? {} : null;
-                                    if (emotionObj) {
-                                        emotionObj[emotion] = parseFloat(confidence) >= 0.8;
+                                } else {
+                                    for (let cls in iden.classified) {
+                                        if (labels[cls] && parseFloat(iden.classified[cls]) >= confidence) {
+                                            let label = {};
+                                            label[cls] = true;
+                                            marker.labels.push(Object.assign(label, {
+                                                thumbnail: iden.imageUrl,
+                                                icon: labels[cls]
+                                            }));
+                                        }
                                     }
-                                    markers.push(Object.assign(marker, {
-                                        emotion: emotionObj
-                                    }));
                                 }
                             }
+                            markers.push(marker);
                         }
                         var player = new Player(message.data.video);
                         player.init({
                             duration: message.data.duration,
                             markers: markers
                         });
-                        $handler.removeAttr("disabled");
-                        $api.removeAttr("disabled");
-                        $fileInput.removeAttr("disabled");
-                        $uploadBtn.removeAttr("disabled");
+                        $("select").removeAttr("disabled");
+                        $("input").removeAttr("disabled");
+                        $("button").removeAttr("disabled");
                         $spinner.remove();
                         break;
                 }

@@ -1,20 +1,16 @@
 tr
     td
-        select.uk-select.uk-form-small
-            each type in types
-                option(value=type.value)= type.text
-    td
-        input.uk-input.uk-form-small(type="text")
+        input.uk-input.uk-form-small.api-url(type="text")
         div(uk-dropdown="mode: click")
             ul.uk-nav.uk-dropdown-nav
                 each api in apis
                     li
                         a(href="#")= api
     td
-        .uk-grid-small(uk-grid)
+        .uk-grid-small.api-label(uk-grid)
             each label in labels
                 label
-                    input.uk-checkbox(type="checkbox")
+                    input.uk-checkbox(type="checkbox" value=label.value data-icon=label.icon)
                     |  #{label.text}
                     span.uk-icon.uk-icon-image.icon-image-custom(
                         style="background-image:url(" + label.icon + ");")

@@ -123,13 +123,14 @@ router.ws("/", (ws, req) => {
             co(function* () {
                 let filename = message.data.filename;
                 let duration = message.data.duration;
+                let frequence = message.data.frequence;
                 let videoHandler = new VideoHandler();
                 let thumbnailFolder = config.Video_Upload_Dir + "/thumbnails";
                 if (!fs.existsSync(thumbnailFolder)) {
                     fs.mkdirSync(thumbnailFolder);
                 }
                 let times = [], files = [];
-                for (let i=1; i<duration; i+=parseInt(config.Second_Per_Capture)) {
+                for (let i=1; i<duration; i+=parseInt(frequence)) {
                     times.push(i);
                 }
                 let input = config.Video_Upload_Dir + "/" + filename;
@@ -167,38 +168,44 @@ router.ws("/", (ws, req) => {
         } else if (message.status == 400) {
             co(function* () {
                 let files = message.data.files;
-                let apiURL = message.data.api;
+                let apis = message.data.apis;
+                let apiNum = apis.length;
                 let videoHandler = new VideoHandler();
                 let identifications = [];
                 for (let i=0, len=files.length; i<len; i++) {
                     let file = files[i];
-                    let identification = yield videoHandler.identify(apiURL, file);
-                    let identified = {
-                        result: identification.result === "success",
-                        thumbnail: file
+                    let timeslot = {
+                        thumbnail: file,
+                        identified: []
                     };
-                    if (identified.result) {
-                        Object.assign(identified, {
-                            imageUrl: identification.imageUrl,
-                            classified: identification.classified
-                        });
-                        identifications.push(identified);
-                        if (i < len - 1) {
-                            let per = parseFloat((i + 1) / len * 100).toFixed(2);
+                    for (let j=0; j<apiNum; j++) {
+                        let api = apis[j];
+                        let identification = yield videoHandler.identify(api, file);
+                        if (identification.result === "success") {
+                            timeslot.identified.push({
+                                apiIndex: j,
+                                imageUrl: identification.imageUrl,
+                                classified: identification.classified
+                            });
+                        }
+                        if (i + (j + 1) / apiNum < len) {
+                            let per = parseFloat((i + (j + 1) / apiNum) / len * 100).toFixed(2);
                             ws.send(JSON.stringify({
                                 status: 401,
                                 data: { percent: parseFloat(per) }
                             }));
-                        } else {
-                            ws.send(JSON.stringify({
-                                status: 402,
-                                data: {
-                                    video: message.data.video,
-                                    duration: message.data.duration,
-                                    identifications: identifications
-                                }
-                            }));
                         }
+                    }
+                    identifications.push(timeslot);
+                    if (i == len - 1) {
+                        ws.send(JSON.stringify({
+                            status: 402,
+                            data: {
+                                video: message.data.video,
+                                duration: message.data.duration,
+                                identifications: identifications
+                            }
+                        }));
                     }
                 }
             }).catch(err => {
