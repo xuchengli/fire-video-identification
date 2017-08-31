@@ -17,7 +17,6 @@ class marker {
             if (!thumbnails[label.src]) {
                 thumbnails[label.src] = $(thumbnailTemplate({
                     src: label.src,
-                    top: (parseInt(height) + labels.length * 25) + "px",
                     left: left
                 }));
             }

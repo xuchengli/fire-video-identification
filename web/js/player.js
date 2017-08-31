@@ -2,12 +2,12 @@
  * Created by lixuc on 2017/6/23.
  */
 import $ from "jquery";
+import UIkit from "uikit";
 import videojs from "video.js";
 import Marker from "./marker";
 import template from "../templates/player.pug";
 
 var Plugin = videojs.getPlugin("plugin");
-var $video = $("#video");
 var $dom;
 var $progressHolder;
 
@@ -17,10 +17,10 @@ class thumbnailMarker extends Plugin {
         $progressHolder = $(".vjs-progress-holder");
         var duration = options.duration;
         var markers = options.markers;
-        for (let [index, marker] of markers.entries()) {
+        for (let marker of markers) {
             if (marker.labels.length > 0) {
                 var left = marker.time / duration * 100;
-                this.createMarker(left + "%", index % 2 == 0 ? "25px" : "50px", marker.labels);
+                this.createMarker(left + "%", "25px", marker.labels);
             }
         }
     }
@@ -34,10 +34,16 @@ videojs.registerPlugin("thumbnailMarker", thumbnailMarker);
 class player {
     constructor(video) {
         $dom = $(template({ video: "video/" + video }));
-        $video.append($dom);
+        var dialog = UIkit.modal($dom);
+        dialog.$el.on("hidden", e => {
+            if (e.target === e.currentTarget) {
+                dialog.$destroy(true);
+            }
+        });
+        dialog.show();
     }
     init(markers) {
-        var player = videojs($dom[0], {
+        var player = videojs($dom.find("video")[0], {
             autoplay: true,
             controls: true,
             preload: "auto",
