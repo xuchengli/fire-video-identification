@@ -1,2 +1,4 @@
-.marker-branch(style={height: height, left: left, background: color} data-src=src)
-    .marker-leaf(style={top: height, 'background-image': 'url(' + icon + ')'})
+.marker-branch(style={height: height, left: left})
+    .marker-leafs(style={top: height})
+        each label in labels
+            .marker-leaf(style={'background-image': 'url(' + label.icon + ')'} data-src=label.src)

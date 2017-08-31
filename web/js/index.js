@@ -184,23 +184,19 @@ UIkit.upload("#uploader", {
                                 if (Array.isArray(iden.classified)) {
                                     for (let cls of iden.classified) {
                                         if (labels[cls.label] && parseFloat(cls.confidence) >= confidence) {
-                                            let label = {};
-                                            label[cls.label] = true;
-                                            marker.labels.push(Object.assign(label, {
-                                                thumbnail: iden.imageUrl,
+                                            marker.labels.push({
+                                                src: iden.imageUrl,
                                                 icon: labels[cls.label]
-                                            }));
+                                            });
                                         }
                                     }
                                 } else {
                                     for (let cls in iden.classified) {
                                         if (labels[cls] && parseFloat(iden.classified[cls]) >= confidence) {
-                                            let label = {};
-                                            label[cls] = true;
-                                            marker.labels.push(Object.assign(label, {
-                                                thumbnail: iden.imageUrl,
+                                            marker.labels.push({
+                                                src: iden.imageUrl,
                                                 icon: labels[cls]
-                                            }));
+                                            });
                                         }
                                     }
                                 }

@@ -7,22 +7,24 @@ import thumbnailTemplate from "../templates/thumbnail.pug";
 
 var $dom, thumbnails = {};
 class marker {
-    constructor(src, left, height, color, icon) {
+    constructor(left, height, labels) {
         $dom = $(markerTemplate({
-            src: src,
             left: left,
             height: height,
-            color: color,
-            icon: icon
+            labels: labels
         }));
-        thumbnails[src] = $(thumbnailTemplate({
-            src: src,
-            top: (parseInt(height) + 30) + "px",
-            left: left
-        }));
-        $dom.hover(evt => {
+        for (let label of labels) {
+            if (!thumbnails[label.src]) {
+                thumbnails[label.src] = $(thumbnailTemplate({
+                    src: label.src,
+                    top: (parseInt(height) + labels.length * 25) + "px",
+                    left: left
+                }));
+            }
+        }
+        $dom.find(".marker-leaf").hover(evt => {
             var $this = $(evt.currentTarget);
-            $this.parent().append(thumbnails[$this.data("src")]);
+            $this.parents(".vjs-progress-holder").append(thumbnails[$this.data("src")]);
         }, evt => {
             var $this = $(evt.currentTarget);
             thumbnails[$this.data("src")].remove();

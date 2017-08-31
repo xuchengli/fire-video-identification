@@ -21,15 +21,19 @@
 .marker-branch {
     position:absolute;
     width:2px;
-    height:100%;
     margin-left:-1px;
+    background-color:#ebebed;
 }
-.marker-leaf {
+.marker-leafs {
     position:absolute;
     width:20px;
-    height:20px;
     left:-9px;
+}
+.marker-leaf {
+    width:20px;
+    height:20px;
     background-size: 20px 20px;
+    margin-bottom:5px;
 }
 .thumbnail {
     position:absolute;
