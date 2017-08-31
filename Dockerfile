@@ -65,11 +65,8 @@ ENV FFMPEG_PATH /root/bin/ffmpeg
 ENV FFPROBE_PATH /root/bin/ffprobe
 
 # Before webpack app in production, you can set context path using <docker build --build-arg context=[my-context-path]>
-# or set AI VISION API using <docker build --build-arg context=[my-context-path] --build-arg api=[special-api]>
 ARG context=/
-ARG api=https://crl.ptopenlab.com:8800/dlaas/api
 ENV Context_Path $context
-ENV AI_VISION_API $api
 
 # Build and start up app
 RUN mkdir -p /usr/app/src

@@ -22,7 +22,7 @@ It leverage below technology for reference:
 
 2. Build app image.
 
-	2.1. Use default context path ( / ) and AI VISION API.
+	2.1. Use default context path ( / ).
 
 	```
 	$ docker build -t my-app-image .
@@ -31,15 +31,7 @@ It leverage below technology for reference:
 	2.2. *( Optional )* build image with special context path.
 
 	```
-	$ docker build --build-arg context=/fire -t my-app-image .
-	```
-
-	2.3. *( Optional )* or build image with special AI VISION API also.
-
-	```
-	$ docker build --build-arg context=/fire \
-		--build-arg api=http://172.29.163.54:8080/AIVision/api \
-		-t my-app-image .
+	$ docker build --build-arg context=/vi -t my-app-image .
 	```
 
 3. Start my app.
@@ -57,8 +49,6 @@ It leverage below technology for reference:
 	```
 	$ docker run -d -p 8080:8080 \
 		-e Video_Upload_Dir=./upload \
-		-e Second_Per_Capture=10 \
-		-e AI_VISION_API=https://ny1.ptopenlab.com/AIVision/api \
 		--name my-app \
 		my-app-image
 	```
