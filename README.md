@@ -42,6 +42,12 @@ It leverage below technology for reference:
 		-t my-app-image .
 	```
 
+	2.4. *( Optional )* build image using Dockerfile for ppc64le.
+
+	```
+	$ docker build -t my-app-image -f Dockerfile_ppc64le .
+	```
+
 3. Start my app.
 
 	3.1. Use default configuration.
