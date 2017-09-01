@@ -16,6 +16,8 @@ import angryIcon from "../images/angry.png";
 import surprisedIcon from "../images/surprised.png";
 import clappingIcon from "../images/clapping.png";
 import waveHandIcon from "../images/waving-hand.png";
+import discoBallIcon from "../images/disco-ball.png";
+import silenceIcon from "../images/silence.png";
 
 UIkit.use(Icons);
 
@@ -51,7 +53,9 @@ var initItem = {
         { value: "angry", text: "Angry", icon: angryIcon },
         { value: "surprised", text: "Surprise", icon: surprisedIcon },
         { value: "clap", text: "Clapping", icon: clappingIcon },
-        { value: "wavehand", text: "Wave hand", icon: waveHandIcon }
+        { value: "wavehand", text: "Wave hand", icon: waveHandIcon },
+        { value: "xuanku", text: "炫酷", icon: discoBallIcon },
+        { value: "non_xuanku", text: "非炫酷", icon: silenceIcon }
     ]
 };
 $tbody.append(template(initItem));
