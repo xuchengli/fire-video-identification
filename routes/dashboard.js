@@ -11,6 +11,9 @@ var VideoHandler = require("../modules/video-handler");
 var router = express.Router();
 
 router.get("/", function(req, res) {
+    res.render("dashboard");
+});
+router.get("/test", function(req, res) {
     let webapi = req.query.webapi_id ?
                     config.AI_VISION_API + "/dlapis/" + req.query.webapi_id : "";
     res.locals.webapi = webapi;
