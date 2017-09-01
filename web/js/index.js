@@ -32,12 +32,14 @@ var $confidence = $("#confidence");
 var $frequence = $("#frequence");
 var $uploader = $("#uploader");
 var $uploadBtn = $("#uploader button");
+var $webapi = $("#webapi");
 var $spinner = $("<div class='uk-margin-left' uk-spinner></div>");
 var $progressContainer = $("#progress");
 var progress;
 var mp4 = true;
 
 var initItem = {
+    api: $webapi.val(),
     apis: [
         "https://crl.ptopenlab.com:8800/dlaas/api/dlapis/d31ab3ee-6d71-4b93-877a-d4a8552b9adc",
         "https://crl.ptopenlab.com:8800/dlaas/api/dlapis/38299ba9-e059-40ee-acbd-5d832757772a",

@@ -12,20 +12,21 @@ block content
             tfoot
                 tr
                     td(colspan="3")
+                        label.uk-margin-small-right Identify video every
+                        select#frequence.uk-select.uk-form-small.uk-margin-right(style="width:60px;")
+                            - for (var n = 1; n <= 60; n++)
+                                option(value=n) #{n}s
                         label.uk-margin-small-right Confidence
                         | > 
-                        select#confidence.uk-select.uk-form-small.uk-margin-right(style="width:65px;")
+                        select#confidence.uk-select.uk-form-small(style="width:65px;")
                             - for (var n = 10; n < 100; n += 10)
                                 if (n == 80)
                                     option(value=n/100 selected="selected") #{n}%
                                 else
                                     option(value=n/100) #{n}%
-                        label.uk-margin-small-right Extract screenshots every
-                        select#frequence.uk-select.uk-form-small(style="width:60px;")
-                            - for (var n = 1; n <= 60; n++)
-                                option(value=n) #{n}s
                         #uploader.uk-align-right(uk-form-custom)
                             input(type="file")
                             button.uk-button.uk-button-primary.uk-button-small(type="button" tabindex="-1")
                                 | Upload your video
         #progress.uk-margin-top
+        input#webapi(type="hidden" value=webapi)
