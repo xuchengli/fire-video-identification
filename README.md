@@ -45,7 +45,9 @@ It leverage below technology for reference:
 	2.4. *( Optional )* build image using Dockerfile for ppc64le.
 
 	```
-	$ docker build -t my-app-image -f Dockerfile_ppc64le .
+	$ docker build --build-arg context=/vi \
+		--build-arg api=http://172.16.10.120:8800/dlaas/api \
+		-f Dockerfile_ppc64le -t my-app-image .
 	```
 
 3. Start my app.
