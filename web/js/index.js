@@ -40,17 +40,18 @@ var $uploader = $("#uploader");
 var $uploadBtn = $("#uploader button");
 var $spinner = $("<div class='uk-margin-left' uk-spinner></div>");
 var $progressContainer = $("#progress");
+var $aiVisionAPI = $("#ai_vision_api");
 var progress;
 var mp4 = true;
 var webapi = $.urlParam("webapi_id");
-webapi = webapi ? $("#ai_vision_api").val() + webapi : "";
+webapi = webapi ? $aiVisionAPI.val() + webapi : "";
 
 var initItem = {
     api: webapi,
     apis: [
-        "https://crl.ptopenlab.com:8800/dlaas/api/dlapis/d31ab3ee-6d71-4b93-877a-d4a8552b9adc",
-        "https://crl.ptopenlab.com:8800/dlaas/api/dlapis/38299ba9-e059-40ee-acbd-5d832757772a",
-        "https://crl.ptopenlab.com:8800/dlaas/api/dlapis/87c1dae5-4043-409b-9421-4960cc3790a7"
+        $aiVisionAPI.val() + "d31ab3ee-6d71-4b93-877a-d4a8552b9adc",
+        $aiVisionAPI.val() + "38299ba9-e059-40ee-acbd-5d832757772a",
+        $aiVisionAPI.val() + "87c1dae5-4043-409b-9421-4960cc3790a7"
     ],
     labels: [
         { value: "fire", text: "Fire", icon: flameIcon },
@@ -205,14 +206,17 @@ socket.addEventListener("message", event => {
                     time: time,
                     labels: []
                 };
+                var imageUrl = "";
                 for (let iden of identified) {
                     var $checkbox = $($apiLabel[iden.apiIndex]).find(".uk-checkbox:checked");
                     var labels = mapReduce($checkbox);
                     if (Array.isArray(iden.classified)) {
                         for (let cls of iden.classified) {
                             if (labels[cls.label] && parseFloat(cls.confidence) >= confidence) {
+                                imageUrl = iden.imageUrl.replace(
+                                    "http://172.16.3.1:8080", "https://crl.ptopenlab.com:8800");
                                 marker.labels.push({
-                                    src: iden.imageUrl,
+                                    src: imageUrl,
                                     icon: labels[cls.label]
                                 });
                             }
@@ -220,8 +224,10 @@ socket.addEventListener("message", event => {
                     } else {
                         for (let cls in iden.classified) {
                             if (labels[cls] && parseFloat(iden.classified[cls]) >= confidence) {
+                                imageUrl = iden.imageUrl.replace(
+                                    "http://172.16.3.1:8080", "https://crl.ptopenlab.com:8800");
                                 marker.labels.push({
-                                    src: iden.imageUrl,
+                                    src: imageUrl,
                                     icon: labels[cls]
                                 });
                             }

@@ -46,7 +46,7 @@ It leverage below technology for reference:
 
 	```
 	$ docker build --build-arg context=/vi \
-		--build-arg api=http://172.16.10.120:8800/dlaas/api \
+		--build-arg api=http://172.16.3.1:8080/dlaas/api \
 		-f Dockerfile_ppc64le -t my-app-image .
 	```
 
