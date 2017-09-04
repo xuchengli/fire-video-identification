@@ -17,6 +17,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.locals.env = env;
 app.locals.context = config.Context_Path == "/" ? "" : config.Context_Path;
+app.locals.ai_vision_api = config.AI_VISION_API + "/dlapis/";
 
 if (env == "development") {
     var webpack = require("webpack");

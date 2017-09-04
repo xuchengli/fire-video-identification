@@ -21,6 +21,10 @@ import silenceIcon from "../images/silence.png";
 
 UIkit.use(Icons);
 
+$.urlParam = name => {
+    var results = new RegExp("[\?&]" + name + "=([^]*)").exec(window.location.href);
+    return results == null ? null : (results[1] || 0);
+};
 var location = window.location, wsURL;
 if (location.protocol == "https:") {
     wsURL = "wss:";
@@ -34,14 +38,15 @@ var $confidence = $("#confidence");
 var $frequence = $("#frequence");
 var $uploader = $("#uploader");
 var $uploadBtn = $("#uploader button");
-var $webapi = $("#webapi");
 var $spinner = $("<div class='uk-margin-left' uk-spinner></div>");
 var $progressContainer = $("#progress");
 var progress;
 var mp4 = true;
+var webapi = $.urlParam("webapi_id");
+webapi = webapi ? $("#ai_vision_api").val() + webapi : "";
 
 var initItem = {
-    api: $webapi.val(),
+    api: webapi,
     apis: [
         "https://crl.ptopenlab.com:8800/dlaas/api/dlapis/d31ab3ee-6d71-4b93-877a-d4a8552b9adc",
         "https://crl.ptopenlab.com:8800/dlaas/api/dlapis/38299ba9-e059-40ee-acbd-5d832757772a",

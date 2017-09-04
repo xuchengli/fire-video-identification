@@ -10,6 +10,7 @@ var HtmlWebpackPlugin = require("html-webpack-plugin");
 var InlineChunkManifestHtmlWebpackPlugin = require("inline-chunk-manifest-html-webpack-plugin");
 var config = require("./modules/configuration");
 var context = config.Context_Path == "/" ? "" : config.Context_Path;
+var ai_vision_api = config.AI_VISION_API + "/dlapis/";
 
 module.exports = {
     entry: "./web/js/index.js",
@@ -81,7 +82,8 @@ module.exports = {
             template: "!!html-loader!pug-html-loader?{" +
                             "data: {" +
                                 "env: 'production'," +
-                                "context: '" + context + "'" +
+                                "context: '" + context + "'," +
+                                "ai_vision_api: '" + ai_vision_api + "'" +
                             "}" +
                         "}!views/dashboard.pug"
         }),

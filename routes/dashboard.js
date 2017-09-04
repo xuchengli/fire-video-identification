@@ -13,12 +13,6 @@ var router = express.Router();
 router.get("/", function(req, res) {
     res.render("dashboard");
 });
-router.get("/test", function(req, res) {
-    let webapi = req.query.webapi_id ?
-                    config.AI_VISION_API + "/dlapis/" + req.query.webapi_id : "";
-    res.locals.webapi = webapi;
-    res.render("dashboard");
-});
 router.post("/upload", (req, res) => {
     var storage = multer.diskStorage({
         destination: (req, file, cb) => {
